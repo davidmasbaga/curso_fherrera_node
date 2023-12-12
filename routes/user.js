@@ -14,7 +14,7 @@ router.put('/:id',
 editUser
 )
 
-router.delete('/',
+router.delete('/:id',
 deleteUser)
 
 
