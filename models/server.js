@@ -1,6 +1,8 @@
 
 const express = require('express')
-const cors = require('cors')
+const cors = require('cors');
+const { dbConnection } = require('../database/config');
+const colors = require('colors')
 
 
 //crear una instancia de la clase
@@ -11,12 +13,18 @@ class Server {
         this.port = process.env.PORT;
         this.usersPath = '/api/users'
 
-
+        //Conexion a base de datos
+        this.connectDb()
         //Middlewares
 
         this.middlewares();
         //Routes
         this.routes()
+
+    }
+
+    async connectDb(){
+        await dbConnection()
 
     }
 
@@ -40,7 +48,7 @@ class Server {
     listen() {
 
         this.app.listen(this.port, () => {
-            console.log('Servidor corriendo en puerto ' + this.port)
+            console.log(`${colors.cyan('[Conexión al Servidor]')} Servidor corriendo en puerto ${this.port} ✅`)
         })
     }
 
