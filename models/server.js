@@ -48,7 +48,7 @@ class Server {
     listen() {
 
         this.app.listen(this.port, () => {
-            console.log(`${colors.cyan('[Conexión al Servidor]')} Servidor corriendo en puerto ${this.port} ✅`)
+            console.log(`${colors.cyan('[Conexión al Servidor]')} Servidor corriendo en puerto ${this.port}`)
         })
     }
 
