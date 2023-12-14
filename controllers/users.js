@@ -6,7 +6,7 @@ const colors = require("colors");
 
 const getAllUsers = async (req, res) => {
 
-  const {limit = '', from = 0} = req.query
+const {limit = '', from = 0} = req.query
 const queryStatus = {status:true}
 
 try {
@@ -23,7 +23,7 @@ try {
   console.log(
     colors.red("[User Error]") +  " no se ha podido mostrar la lista de usuarios: " + error
   );
-  throw new Error(error)
+  res.status(400).json(error)
 }
 
 
@@ -97,7 +97,7 @@ const editUser = async (req, res = response) => {
       restOfUserObject.password = bcryptjs.hashSync(password, salt);
     }
 
-    const user = await User.findByIdAndUpdate(id, restOfUserObject.trim());
+    const user = await User.findByIdAndUpdate(id, restOfUserObject);
 
     console.log(
       `${colors.green("[User Update]")} usuario ${id} actualizado correctamente`
