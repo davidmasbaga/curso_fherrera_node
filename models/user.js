@@ -31,13 +31,14 @@ const UserSchema = Schema({
   google:{
     type:Boolean,
     default:false,
-  }
-});
+  },
+  
+},{timestamps:true});
 
 // module.exports = mongoose.model('User', UserSchema);
 
 UserSchema.methods.toJSON = function (){
-  const {__v, password, ...user} = this.toObject()
+  const {__v, password,updatedAt, ...user} = this.toObject()
   return user
 
 }

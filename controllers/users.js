@@ -3,11 +3,55 @@ const User = require("../models/user.js");
 const bcryptjs = require("bcryptjs");
 const colors = require("colors");
 
-const getUser = (req, res = response) => {
-  const { q, nombre = "No name", apikey } = req.query;
 
-  res.status(201).json({ msg: "get API - Controller", q, nombre, apikey });
+const getAllUsers = async (req, res) => {
+
+  const {limit = '', from = 0} = req.query
+const queryStatus = {status:true}
+
+try {
+  const [total, users] = await Promise.all([
+    User.countDocuments(queryStatus),
+    User.find(queryStatus)
+    .skip(Number(from))
+    .limit(Number(limit))
+
+  ])
+
+    res.status(200).json({total,users});
+} catch (error) {
+  console.log(
+    colors.red("[User Error]") +  " no se ha podido mostrar la lista de usuarios: " + error
+  );
+  throw new Error(error)
+}
+
+
 };
+
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+
+ 
+  res.status(200).json(user);
+  } catch (error) {
+    console.log(colors.red('[User Error]')+ ' no se ha encontrado ningún usuario con la id ' + id)
+    throw new Error(error)
+  }
+  
+
+ 
+
+  
+
+  try {
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const createUser = async (req, res = response) => {
   try {
     const { name, email, password, role } = req.body;
@@ -35,9 +79,9 @@ const createUser = async (req, res = response) => {
       )}`
     );
 
-    res.status(201).json({
-      user,
-    });
+    res.status(201).json(
+      user
+    );
   } catch (error) {
     console.log(`${colors.red("error")}:`, error);
     res.status(404).json({ msg: "error al guardar el usuario" });
@@ -53,7 +97,7 @@ const editUser = async (req, res = response) => {
       restOfUserObject.password = bcryptjs.hashSync(password, salt);
     }
 
-    const user = await User.findByIdAndUpdate(id, restOfUserObject);
+    const user = await User.findByIdAndUpdate(id, restOfUserObject.trim());
 
     console.log(
       `${colors.green("[User Update]")} usuario ${id} actualizado correctamente`
@@ -69,8 +113,10 @@ const deleteUser = (req, res = response) => {
 };
 
 module.exports = {
-  getUser,
+  // getUser,
   createUser,
   editUser,
   deleteUser,
+  getAllUsers,
+  getUserById,
 };
