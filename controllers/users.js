@@ -108,8 +108,26 @@ const editUser = async (req, res = response) => {
     throw new Error(error);
   }
 };
-const deleteUser = (req, res = response) => {
-  res.status(201).json({ msg: "delete API - Controller" });
+const  deleteUser = async (req, res = response) => {
+const id = req.params.id;
+
+const user = await User.findByIdAndUpdate(id,{status:false})
+
+try {
+res.status(200).json({msg:`User ${id} has been deleted succesfully`})  
+} catch (error) {
+  res.status(500).json(error)
+}
+
+// Método no recomendado
+// const user = await User.findByIdAndDelete(id);
+// try {
+//     res.status(201).json({ msg: `User ${id} has been deleted succesfull`});
+//   } catch (error) {
+//   res.status(500).json({error:error})
+// }
+
+  
 };
 
 module.exports = {

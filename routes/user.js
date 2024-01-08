@@ -48,7 +48,11 @@ fieldValidator
 editUser
 )
 
-router.delete('/:id',
+router.delete('/:id',[
+  check('id', 'Is not a valid ID').trim().isMongoId(),
+  check('id').trim().custom(userExist),
+  fieldValidator
+],
 deleteUser)
 
 
