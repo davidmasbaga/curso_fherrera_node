@@ -38,7 +38,8 @@ const UserSchema = Schema({
 // module.exports = mongoose.model('User', UserSchema);
 
 UserSchema.methods.toJSON = function (){
-  const {__v, password,updatedAt, ...user} = this.toObject()
+  const {__v, password,updatedAt,_id, ...user} = this.toObject()
+  user.uid = _id
   return user
 
 }
