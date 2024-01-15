@@ -2,7 +2,8 @@ const { response } = require('express')
 const colors = require('colors')
 const User = require('../models/user')
 const bcryptjs = require('bcryptjs')
-const {jwtGen} = require('../helpers/jwtGenerator')
+const { jwtGen } = require('../helpers/jwtGenerator')
+const { googleVerify } = require('../helpers/google-verify')
 const login = async (req, res = response) => {
     const { email, password } = req.body;
 
@@ -25,8 +26,8 @@ const login = async (req, res = response) => {
         }
 
         //Generar el JWT
-        const token = await jwtGen(user.id, )
-        
+        const token = await jwtGen(user.id,)
+
 
         res.status(200).json({
             user,
@@ -41,6 +42,59 @@ const login = async (req, res = response) => {
 }
 
 
+const googleSignIn = async (req, res=response) => {
+    const {id_token} = req.body;
+
+    try {
+       const {email,name,picture} = await googleVerify(id_token)
+
+
+       let user =  await User.findOne({email})
+
+       if(!user){
+        const data = {
+            name:name,
+            email:email,
+            password:":p",
+            image:picture,
+            google:true,
+            role:"USER_ROLE"
+            
+        }
+
+       user = new User(data)
+        await user.save()
+       }
+       
+if(!user.status){
+    return res.status(401).json({
+        msg:"User unauthorized"
+    })
+}
+
+const token = await jwtGen(user.id)
+
+       res.status(200).json({
+          user,
+        token
+    })
+
+
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            msg:"Token not verify"
+        })
+    }
+    
+
+    
+
+
+}
+
+
 module.exports = {
-    login
+    login,
+    googleSignIn
 }
