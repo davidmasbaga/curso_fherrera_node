@@ -1,6 +1,6 @@
 
 const Role = require('../models/role')
-const User = require('../models/user')
+const {User, Category} = require('../models')
 const colors = require('colors')
 
 
@@ -20,6 +20,9 @@ const emailExist = async (email='') => {
     }
 
 }
+
+
+//Validadores de usuario
 const userExist = async (id='') => {
     const isUserInDB= await User.findById(id);
     console.log(`${colors.yellow('[User Alert]')} the id ${id} do not exist`)
@@ -30,10 +33,22 @@ const userExist = async (id='') => {
 }
 
 
+//Validadores de categorías
+
+const categoryExists = async (id='') => {
+    const isCategoryInDB= await Category.findById(id);
+        if (!isCategoryInDB) {
+            console.log(`${colors.yellow('[Category Alert]')} the id ${id} does not exist`)
+     throw new Error(`${colors.yellow('[Category Alert]')} the id ${id} does not exist`)
+    }
+
+}
+
+
    
 
     module.exports= {
         isRoleValid,
         emailExist,
-        userExist
-    }
+        userExist,
+        categoryExists    }
