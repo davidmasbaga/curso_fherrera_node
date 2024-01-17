@@ -48,7 +48,9 @@
           .then((resp) => resp.json())
           .then((res) => {
             console.log(res)
+            location.reload()
             localStorage.setItem('email',res.user.email)
+           
           
           })
           .catch(console.warn);
