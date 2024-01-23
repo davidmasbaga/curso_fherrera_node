@@ -7,76 +7,62 @@ const {
   adminRoleValidator,
   hasRole,
 } = require("../middlewares");
-const {
-  createCategory,
-  getAllCategories,
-  getCategoriesById,
-  editCategory,
-  deleteCategory,
-} = require("../controllers/categories");
-const { categoryExists } = require("../helpers/dbValidators");
+const { createProduct, getAllProducts, getProductsById, editProduct, deleteProduct } = require("../controllers/products");
+const { categoryExists, productExists } = require("../helpers/dbValidators");
+const { deleteCategory } = require("../controllers/categories");
 
 const router = Router();
 
 //Obtener todas las categorias - Publico
 router.get(
-  "/",
-  [
+  "/",[
     check("limit", "The limit has to be a number").optional().isNumeric(),
     check("from", "Init value has to be a number").optional().isNumeric(),
     fieldValidator,
-  ],
-  getAllCategories
+  ],getAllProducts
 );
 
 //Obtener una categoria por Id - Publico
 router.get(
-  "/:id",
-
-  [
-    check('id').custom(categoryExists),
+  "/:id",[
+    check('id').custom(productExists),
     check("id", "It is not a MongoID").isMongoId(),
     fieldValidator],
 
-  getCategoriesById
+  getProductsById
+  
 );
 
 //Crear una nueva categoría - Privado con cualquier role
 router.post(
-  "/",
-  [
+  "/",[
     jwtValidate,
     check("name", "Name is required").not().isEmpty(),
     fieldValidator,
-  ],
-  createCategory
+  ],createProduct
 );
 
 //Actualizar un registro - Privado con cualquier role
 router.put(
-  "/:id",
-  [
+  "/:id", [
     jwtValidate,
     hasRole('ADMIN_ROLE'),
-    check("id").trim().custom(categoryExists),
+    check("id").trim().custom(productExists),
     check("id", "Is not a valid ID").trim().isMongoId(),
     fieldValidator,
-  ],
-
-  editCategory
+  ], editProduct
 );
 
 //Eliminar un registro - Privado con ADMIN_ROLE
 router.delete(
-  "/:id",
-  [
+  "/:id", [
     jwtValidate,
     hasRole('ADMIN_ROLE'),
-    check("id").trim().custom(categoryExists),
+    check("id").trim().custom(productExists),
     check("id", "Is not a valid ID").trim().isMongoId(),
     fieldValidator,
-  ],
-  deleteCategory
+  ], deleteProduct
+  
 );
 
 module.exports = router;

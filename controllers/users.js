@@ -3,30 +3,25 @@ const User = require("../models/user.js");
 const bcryptjs = require("bcryptjs");
 const colors = require("colors");
 
-
 const getAllUsers = async (req, res) => {
-
-  const { limit = '', from = 0 } = req.query
-  const queryStatus = { status: true }
+  const { limit = "", from = 0 } = req.query;
+  const queryStatus = { status: true };
 
   try {
     const [total, users] = await Promise.all([
       User.countDocuments(queryStatus),
-      User.find(queryStatus)
-        .skip(Number(from))
-        .limit(Number(limit))
-
-    ])
+      User.find(queryStatus).skip(Number(from)).limit(Number(limit)),
+    ]);
 
     res.status(200).json({ total, users });
   } catch (error) {
     console.log(
-      colors.red("[User Error]") + " no se ha podido mostrar la lista de usuarios: " + error
+      colors.red("[User Error]") +
+        " no se ha podido mostrar la lista de usuarios: " +
+        error
     );
-    res.status(400).json(error)
+    res.status(400).json(error);
   }
-
-
 };
 
 const getUserById = async (req, res) => {
@@ -34,17 +29,15 @@ const getUserById = async (req, res) => {
   try {
     const user = await User.findById(id);
 
-
     res.status(200).json(user);
   } catch (error) {
-    console.log(colors.red('[User Error]') + ' no se ha encontrado ningún usuario con la id ' + id)
-    throw new Error(error)
+    console.log(
+      colors.red("[User Error]") +
+        " no se ha encontrado ningún usuario con la id " +
+        id
+    );
+    throw new Error(error);
   }
-
-
-
-
-
 
   try {
   } catch (error) {
@@ -79,9 +72,7 @@ const createUser = async (req, res = response) => {
       )}`
     );
 
-    res.status(201).json(
-      user
-    );
+    res.status(201).json(user);
   } catch (error) {
     console.log(`${colors.red("error")}:`, error);
     res.status(404).json({ msg: "error al guardar el usuario" });
@@ -111,28 +102,29 @@ const editUser = async (req, res = response) => {
 const deleteUser = async (req, res = response) => {
   const id = req.params.id;
 
-  const user = await User.findByIdAndUpdate(id, { status: false })
-  // const authUser = req.user
-
+  const user = await User.findByIdAndUpdate(id, { status: false });
+  
+  // Soft-Delete
   try {
-    console.log(colors.magenta(`[User Deleted] `) + `User ${id} has been deleted succesfully`)
-    res.status(200).json({ msg: `User ${id} has been deleted succesfully`, user })
+    console.log(
+      colors.magenta(`[User Deleted] `) +
+        `User ${id} has been deleted succesfully`
+    );
+    res
+      .status(200)
+      .json({ msg: `User ${id} has been deleted succesfully`, user });
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error);
   }
 
-  // Método no recomendado
+  // Hard-Delete
   // const user = await User.findByIdAndDelete(id);
   // try {
   //     res.status(201).json({ msg: `User ${id} has been deleted succesfull`});
   //   } catch (error) {
   //   res.status(500).json({error:error})
   // }
-
-
 };
-
-
 
 module.exports = {
   // getUser,

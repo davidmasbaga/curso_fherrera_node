@@ -1,7 +1,9 @@
 
 const Role = require('../models/role')
-const {User, Category} = require('../models')
+const {User, Category, Product} = require('../models')
 const colors = require('colors')
+
+const dataModelProduct = "Product"
 
 
 const isRoleValid= async(role='')=>{
@@ -44,6 +46,15 @@ const categoryExists = async (id='') => {
 
 }
 
+const productExists = async (id='') => {
+    const isProductInDB= await Product.findById(id);
+        if (!isProductInDB) {
+            console.log(`${colors.yellow(`[${dataModelProduct} Alert]`)} the id ${id} does not exist`)
+     throw new Error(`${colors.yellow(`[${dataModelProduct} Alert]`)} the id ${id} does not exist`)
+    }
+
+}
+
 
    
 
@@ -51,4 +62,5 @@ const categoryExists = async (id='') => {
         isRoleValid,
         emailExist,
         userExist,
-        categoryExists    }
+        categoryExists,
+    productExists   }
